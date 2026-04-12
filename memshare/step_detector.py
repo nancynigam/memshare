@@ -40,9 +40,9 @@ BOUNDARY_PATTERNS = [
 ]
 
 # Compile into a single pattern that matches at line beginnings
-# (after a newline) or after sentence-ending punctuation.
+# OR after sentence-ending punctuation (. ! ? followed by space).
 _BOUNDARY_RE = re.compile(
-    r"(?:^|\n)\s*(" + "|".join(BOUNDARY_PATTERNS) + r")",
+    r"(?:^|\n|[.!?]\s)\s*(" + "|".join(BOUNDARY_PATTERNS) + r")",
     re.IGNORECASE,
 )
 
@@ -73,8 +73,9 @@ def detect_steps(trace: str, min_step_chars: int = 40) -> list[str]:
     prev_start = 0
 
     for match in splits:
-        # Split point is the start of the matched boundary phrase
-        split_pos = match.start()
+        # Split at the capture group (the boundary phrase itself),
+        # not the full match (which includes preceding punctuation/newline).
+        split_pos = match.start(1)
 
         # Don't split if it would create a too-short step
         if split_pos - prev_start < min_step_chars:

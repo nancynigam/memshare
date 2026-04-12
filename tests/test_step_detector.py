@@ -27,6 +27,33 @@ def test_basic_splitting():
     print(f"PASS: basic splitting → {len(steps)} steps")
 
 
+def test_empty_trace():
+    """Empty or whitespace-only input returns empty list."""
+    assert detect_steps("") == []
+    assert detect_steps("   ") == []
+    print("PASS: empty trace → []")
+
+
+def test_no_boundaries():
+    """Trace with no boundary markers returns single step."""
+    trace = "I solved the equation and got x = 5. The answer is 5."
+    steps = detect_steps(trace)
+    assert len(steps) == 1, f"Expected 1 step, got {len(steps)}"
+    print("PASS: no boundaries → 1 step")
+
+
+def test_mid_sentence_boundary():
+    """Boundary markers after punctuation (not just newlines) are detected."""
+    trace = (
+        "I computed -3(4) - 6(2) - 5 and got -29. "
+        "Wait, let me verify that calculation again. "
+        "Yes -3 times 4 is -12, -6 times 2 is -12, minus 5 is -29."
+    )
+    steps = detect_steps(trace, min_step_chars=20)
+    assert len(steps) == 2, f"Expected 2 steps, got {len(steps)}"
+    print(f"PASS: mid-sentence boundary → {len(steps)} steps")
+
+
 def test_real_trace():
     """Run detector on AIME trace 60 and print results."""
     trace_file = TRACES_DIR / "60.json"
