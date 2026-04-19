@@ -7,3 +7,4 @@ __pycache__/
 *.md
 !README.md
 !PLAN.md
+!code-review.md
